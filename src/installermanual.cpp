@@ -19,10 +19,9 @@ along with Mod Organizer.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "installermanual.h"
 
+#include <QDesktopServices>
 #include <QDialog>
 #include <QtPlugin>
-
-#include <Shellapi.h>
 
 #include <uibase/game_features/igamefeatures.h>
 #include <uibase/game_features/moddatachecker.h>
@@ -90,18 +89,12 @@ bool InstallerManual::isArchiveSupported(std::shared_ptr<const MOBase::IFileTree
 
 void InstallerManual::openFile(const FileTreeEntry* entry)
 {
-  QString tempName = manager()->extractFile(entry->shared_from_this());
+  QString name = manager()->extractFile(entry->shared_from_this());
 
-  SHELLEXECUTEINFOW execInfo;
-  memset(&execInfo, 0, sizeof(SHELLEXECUTEINFOW));
-  execInfo.cbSize        = sizeof(SHELLEXECUTEINFOW);
-  execInfo.fMask         = SEE_MASK_NOCLOSEPROCESS;
-  execInfo.lpVerb        = L"open";
-  std::wstring fileNameW = ToWString(tempName);
-  execInfo.lpFile        = fileNameW.c_str();
-  execInfo.nShow         = SW_SHOWNORMAL;
-  if (!::ShellExecuteExW(&execInfo)) {
-    qCritical("failed to spawn %s: %d", qUtf8Printable(tempName), ::GetLastError());
+  bool result = QDesktopServices::openUrl(QUrl::fromLocalFile(name));
+
+  if (!result) {
+    qCritical("failed to spawn %s: %d", qUtf8Printable(name), ::GetLastError());
   }
 }
 
