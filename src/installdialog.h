@@ -31,9 +31,6 @@ along with Mod Organizer.  If not, see <http://www.gnu.org/licenses/>.
 #include <uibase/iplugingame.h>
 #include <uibase/tutorabledialog.h>
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
 #include "archivetree.h"
 
 namespace Ui
